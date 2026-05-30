@@ -60,9 +60,37 @@ public final class PersonaAutorizadaRepositoryMySQL
 
     @Override
     public List<PersonaAutorizada> findAll() {
-        return new ArrayList<>();
-    }
+        String sql = """
+            SELECT dni, nombre_completo, direccion, telefono, 
+                   relacion_con_nino, numero_cuenta_bancaria, es_responsable_pago
+            FROM persona_autorizada 
+            ORDER BY nombre_completo ASC
+            """;
 
+        List<PersonaAutorizada> personas = new ArrayList<>();
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                personas.add(new PersonaAutorizada(
+                        null,                                  
+                        new Dni(rs.getString("dni")),
+                        rs.getString("nombre_completo"),
+                        rs.getString("direccion"),
+                        rs.getString("telefono"),
+                        RelacionConNino.valueOf(rs.getString("relacion_con_nino")),
+                        rs.getString("numero_cuenta_bancaria"),
+                        rs.getBoolean("es_responsable_pago")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error al listar personas autorizadas: " + e.getMessage(), e);
+        }
+
+        return personas;
+    }
     @Override
     public void delete(Long id) {
     }

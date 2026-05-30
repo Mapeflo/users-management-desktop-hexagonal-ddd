@@ -1,5 +1,6 @@
 package com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler;
 
+import com.jcaa.usersmanagement.application.port.in.CreatePersonaAutorizadaUseCase;
 import com.jcaa.usersmanagement.application.service.personaautorizada.dto.PersonaAutorizadaResponse;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.io.ConsoleIO;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,20 @@ public class PersonaAutorizadaMenuHandler implements OperationHandler {
     }
 
     private void createPersona() {
-        console.println("Funcionalidad de crear en desarrollo...");
+        try {
+            String dni = console.readRequired("DNI                             : ");
+            String nombreCompleto = console.readRequired("Nombre completo                 : ");
+            String direccion = console.readRequired("Dirección                       : ");
+            String telefono = console.readRequired("Teléfono                        : ");
+            String relacionStr = console.readRequired("Relación con el niño            : ");
+            String cuentaBancaria = console.readRequired("Número de cuenta bancaria (opcional): ");
+            boolean esResponsable = console.readRequired("¿Es responsable de pago? (S/N)  : ")
+                    .equalsIgnoreCase("S");
+            console.println("\n  Persona autorizada creada exitosamente.");
+
+        } catch (Exception e) {
+            console.println("  Error al crear persona autorizada: " + e.getMessage());
+        }
     }
 
     private void listPersonas() {
@@ -64,3 +78,4 @@ public class PersonaAutorizadaMenuHandler implements OperationHandler {
                 "❌ La persona NO está autorizada");
     }
 }
+
