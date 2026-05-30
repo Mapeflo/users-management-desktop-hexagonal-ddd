@@ -19,6 +19,10 @@ import com.jcaa.usersmanagement.infrastructure.adapter.persistence.config.Databa
 import com.jcaa.usersmanagement.infrastructure.adapter.persistence.config.DatabaseConnectionFactory;
 import com.jcaa.usersmanagement.infrastructure.adapter.persistence.repository.UserRepositoryMySQL;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.controller.UserController;
+import com.jcaa.usersmanagement.application.port.in.*;
+import com.jcaa.usersmanagement.application.service.personaautorizada.*;
+import com.jcaa.usersmanagement.infrastructure.adapter.persistence.repository.PersonaAutorizadaRepositoryMySQL;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.PersonaAutorizadaHandler;
 
 import java.sql.Connection;
 import jakarta.validation.Validator;
@@ -39,6 +43,7 @@ public final class DependencyContainer {
   private static final String SMTP_FROM_NAME = "smtp.from.name";
 
   private final UserController userController;
+  private final PersonaAutorizadaHandler personaAutorizadaHandler;
 
   public DependencyContainer() {
     final AppProperties properties = new AppProperties();
@@ -71,6 +76,24 @@ public final class DependencyContainer {
             getUserByIdUseCase,
             getAllUsersUseCase,
             loginUseCase);
+
+    final PersonaAutorizadaRepositoryMySQL personaAutorizadaRepository =
+            new PersonaAutorizadaRepositoryMySQL(connection);
+
+    final CreatePersonaAutorizadaUseCase createPersonaAutorizadaUseCase =
+            new CreatePersonaAutorizadaService(personaAutorizadaRepository);
+
+    final ListPersonaAutorizadaUseCase listPersonaAutorizadaUseCase =
+            new ListPersonaAutorizadaService(personaAutorizadaRepository);
+
+    final VerificarAutorizacionUseCase verificarAutorizacionUseCase =
+            new VerificarAutorizacionService(personaAutorizadaRepository);
+
+    this.personaAutorizadaHandler = new PersonaAutorizadaHandler(
+            createPersonaAutorizadaUseCase,
+            listPersonaAutorizadaUseCase,
+            verificarAutorizacionUseCase
+    );
   }
 
   public UserController userController() {
@@ -96,5 +119,8 @@ public final class DependencyContainer {
         properties.get(SMTP_PASSWORD),
         properties.get(SMTP_FROM),
         properties.get(SMTP_FROM_NAME));
+  }
+  public PersonaAutorizadaHandler personaAutorizadaHandler() {
+    return personaAutorizadaHandler;
   }
 }

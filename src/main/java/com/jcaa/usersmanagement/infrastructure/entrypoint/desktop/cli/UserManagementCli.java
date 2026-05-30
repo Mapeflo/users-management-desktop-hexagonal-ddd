@@ -7,6 +7,8 @@ import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.Li
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.LoginHandler;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.OperationHandler;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.UpdateUserHandler;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.PersonaAutorizadaHandler;
+import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.handler.PersonaAutorizadaMenuHandler;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.io.ConsoleIO;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.io.UserResponsePrinter;
 import com.jcaa.usersmanagement.infrastructure.entrypoint.desktop.cli.menu.MenuOption;
@@ -29,6 +31,8 @@ public final class UserManagementCli {
 
   private final UserController userController;
   private final ConsoleIO console;
+  private final PersonaAutorizadaHandler personaAutorizadaHandler;
+
 
   public void start() {
     console.println(BANNER);
@@ -74,7 +78,8 @@ public final class UserManagementCli {
         MenuOption.CREATE_USER, new CreateUserHandler(userController, console, printer),
         MenuOption.UPDATE_USER, new UpdateUserHandler(userController, console, printer),
         MenuOption.DELETE_USER, new DeleteUserHandler(userController, console),
-        MenuOption.LOGIN,       new LoginHandler(userController, console, printer));
+        MenuOption.LOGIN,       new LoginHandler(userController, console, printer),
+            MenuOption.PERSONA_AUTORIZADA,  new PersonaAutorizadaMenuHandler(personaAutorizadaHandler, console));
   }
 
   private void printMenu() {

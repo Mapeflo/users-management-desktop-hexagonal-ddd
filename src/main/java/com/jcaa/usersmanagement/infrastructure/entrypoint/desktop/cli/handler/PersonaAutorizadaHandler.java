@@ -15,6 +15,7 @@ public class PersonaAutorizadaHandler {
 
     public void createPersonaAutorizada(/* parámetros */) {
 
+        System.out.println("Crear persona autorizada - pendiente");
     }
 
     public List<PersonaAutorizadaResponse> listPersonas() {
